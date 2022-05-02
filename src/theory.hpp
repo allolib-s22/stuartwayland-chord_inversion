@@ -402,6 +402,7 @@ namespace theory {
                     this->drop();
                     newIdx = notes[0].index+12;
                 }
+                notes[0] = notes[0].octaveUp(1);
                 std::rotate(notes.begin(), notes.begin()+1, notes.end());
             }
         }

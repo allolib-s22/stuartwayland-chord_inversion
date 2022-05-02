@@ -1,3 +1,6 @@
+#ifndef NOTECONSTS_HPP
+#define NOTECONSTS_HPP
+
 #include <string>
 /*
     Stores constants / names / labels for Note
@@ -197,3 +200,6 @@ namespace interval_type
     };
     
 }
+
+
+#endif

@@ -1,3 +1,7 @@
+#ifndef NOTEHELPERS_HPP
+#define NOTEHELPERS_HPP
+
+
 #include <string>
 #include <vector>
 #include <stdio.h>
@@ -426,3 +430,6 @@ namespace helper{
 
     
 }
+
+
+#endif

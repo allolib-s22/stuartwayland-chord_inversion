@@ -1,4 +1,5 @@
-// main.cpp
+#ifndef MYAPP_HPP
+#define MYAPP_HPP
 
 #include "Gamma/Analysis.h"
 #include "Gamma/Effects.h"
@@ -16,15 +17,16 @@
 #include "al/graphics/al_Font.hpp"
 
 #include "squarewave.hpp"
-//#include "myapp.hpp"
 
- #include "theory.hpp"
- #include "tempo.hpp"
+#include "theory.hpp"
+#include "tempo.hpp"
+
 
 
 using namespace al;
 using namespace theory;
 
+// The helper function used to visualize which keys pressed or released on a virtual piano.
 int asciiToKeyLabelIndex(int asciiKey) {
   switch (asciiKey) {
   case '2':
@@ -103,10 +105,14 @@ int asciiToKeyLabelIndex(int asciiKey) {
 }
 
 // We make an app.
-class MyApp : public App
-{
-public:
-
+class MyApp : public App {
+ public:
+  // GUI manager for SineEnv voices
+  // The name provided determines the name of the directory
+  // where the presets and sequences are stored
+  SynthGUIManager<SquareWave> synthManager{"Chord Graphics"};
+  
+  // Mesh and variables for drawing piano keys
   Mesh meshKey;
   float keyWidth, keyHeight;
   float keyPadding = 2.f;
@@ -118,8 +124,10 @@ public:
   // Font renderder
   FontRenderer fontRender;
 
-  SynthGUIManager<SquareWave> synthManager{"SquareWave"};
-
+  // This function is called right after the window is created
+  // It provides a grphics context to initialize ParameterGUI
+  // It's also a good place to put things that should
+  // happen once at startup.
   void onCreate() override {
     navControl().active(false);  // Disable navigation via keyboard, since we
                                  // will be using keyboard for note triggering
@@ -144,13 +152,12 @@ public:
 
     synthManager.synthRecorder().verbose(true);
   }
-
   // The audio callback function. Called when audio hardware requires data
   void onSound(AudioIOData& io) override {
     synthManager.render(io);  // Render audio
   }
-  void onAnimate(double dt) override
-  {
+
+  void onAnimate(double dt) override{
     // The GUI is prepared here
     imguiBeginFrame();
     // Draw a window that contains the synth control panel
@@ -159,8 +166,7 @@ public:
   }
 
   // The graphics callback function.
-  // The graphics callback function.
-  void onDraw(Graphics& g) override {
+   void onDraw(Graphics& g) override{
     g.clear();
 
     // This example uses only the orthogonal projection for 2D drawing
@@ -227,10 +233,11 @@ public:
     // GUI is drawn here
     imguiDraw();
   }
-  // Whenever a key is pressed, this function is called
-  bool onKeyDown(Keyboard const &k) override
-  {
-     if (ParameterGUI::usingKeyboard()) {  // Ignore keys if GUI is using
+
+//   // Whenever a key is pressed, this function is called
+   bool onKeyDown(Keyboard const& k) override{
+    
+    if (ParameterGUI::usingKeyboard()) {  // Ignore keys if GUI is using
          return true;
     }
  
@@ -242,7 +249,7 @@ public:
     Chord chordE = Chord("Em", 3);
     Chord chordF = Chord("Fmaj", 2);
     Chord chordG = Chord("Gmaj", 2);
-  if(k.shift()){
+
     switch (k.key())
     {
      case 'a':
@@ -292,63 +299,30 @@ public:
       }
       return false; 
     }
-  }
-  else{
-    // Otherwise trigger note for polyphonic synth
-      int midiNote = asciiToMIDI(k.key());
-      
-      if (midiNote > 0) {
-        // Check which key is pressed
-        int keyIndex = asciiToKeyLabelIndex(k.key());
-        
-        bool isBlackKey = false;
-        if(keyIndex >= 20) {
-          keyIndex -= 20;
-          isBlackKey = true;
-        }
-
-        synthManager.voice()->setInternalParameterValue(
-            "frequency", ::pow(2.f, (midiNote - 69.f) / 12.f) * 432.f);
-
-        float w = keyWidth;
-        float h = keyHeight;
-        float x = (keyWidth + keyPadding * 2) * (keyIndex % 10) + keyPadding;
-        float y = 0;
-        
-        if(isBlackKey == true) {
-          x += keyWidth * 0.5;
-          y += keyHeight * 0.5;
-          h *= 0.5;
-        }
-        
-        if(keyIndex >= 10) {
-          y += keyHeight + keyPadding * 2;
-        }
-        
-        synthManager.voice()->setInternalParameterValue("pianoKeyWidth", w);
-        synthManager.voice()->setInternalParameterValue("pianoKeyHeight", h);
-        synthManager.voice()->setInternalParameterValue("pianoKeyX", x);
-        synthManager.voice()->setInternalParameterValue("pianoKeyY", y);
-        
-        synthManager.triggerOn(midiNote);
-      }
-  }
     return true;
   }
 
   // Whenever a key is released this function is called
-  bool onKeyUp(Keyboard const &k) override{
-   int midiNote = asciiToMIDI(k.key());
+  bool onKeyUp(Keyboard const& k) override{
+    
+     int midiNote = asciiToMIDI(k.key());
     if (midiNote > 0)
     {
       synthManager.triggerOff(midiNote);
     }
     return true;
   }
+  
+  // Whenever the window size changes this function is called
+  void onResize(int w, int h) override{
+    // Recaculate the size of piano keys based new window size
+    keyWidth = w / 10.f - keyPadding * 2.f;
+    keyHeight = h / 2.f - keyPadding * 2.f;
+    fontSize = keyWidth * 0.2;
+    addRect(meshKey, 0, 0, keyWidth, keyHeight);
+  }
 
-  void onExit() override { imguiShutdown(); }
-
-  // New code: a function to play a note A
+  void onExit() override;// { imguiShutdown(); }
 
   float playNote(float time, Note note, float duration = 0.5, float amp = 0.2, float attack = 0.1, float decay = 0.5)
   {
@@ -358,9 +332,18 @@ public:
     synthManager.synthSequencer().addVoiceFromNow(voice, time, duration*0.9);
 
     return time+duration;
+
   }
 
-  float playChord(float time, Chord chord, float duration, bool roll=false){
+//   void releaseNote(Note note)
+//   {
+//       int midiNote = note.midi();
+//       if (midiNote > 0) {
+//         synthManager.triggerOff(midiNote);
+//       }
+//   }
+  float playChord(float time, Chord chord, float duration, bool roll=false)
+ {
       float localTime = 0;
       for(int i=0; i<chord.notes.size(); i++){
           playNote(time+localTime, chord.notes[i], duration, 0.05, 0.2, 0.75);
@@ -368,10 +351,14 @@ public:
       }
       return time+duration;
   }
-
+  // void releaseChord(Chord chord){
+  //   float localTime = 0;
+  //     for(int i=0; i<chord.notes.size(); i++){
+  //         releaseNote(chord.notes[i]);
+  //     }
+  // }
   void playHappyBirthday(Note root, float bpm)
   {
-    
     // Happy birthday uses: P1(C), M2(D), M3(E), P4(F), P5(G), M6(A), and m7(Bb)
     Scale majScale = Scale(root, scale_type::Major);
     Note M2 = majScale.degree(scale_type::II);
@@ -448,20 +435,7 @@ public:
 
   }
 
+};
 
 
-  };
-
-
-int main() {
-  // Create app instance
-  MyApp app;
-  
-  // Set window size
-  app.dimensions(1200, 600);
-  
-  // Set up audio
-  app.configureAudio(48000., 512, 2, 0);
-  app.start();
-  return 0;
-}
+#endif

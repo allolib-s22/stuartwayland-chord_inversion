@@ -1,3 +1,6 @@
+#ifndef TEMPO_HPP
+#define TEMPO_HPP
+
 #include <string>
 #include <vector>
 #include <stdio.h>
@@ -49,3 +52,5 @@ class Tempo{
             return duration;
         }
 };
+
+#endif
