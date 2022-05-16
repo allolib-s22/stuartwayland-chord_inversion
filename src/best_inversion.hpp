@@ -27,7 +27,7 @@ class Best_Inversion{
 
         int next_best_inversion(Chord next){
             int return_value = 0;
-            double scalar = 0.1;
+            double scalar = 0.5;
             float least_sum = -1;
             for(int i=0; i<3; i++){
                 if(least_sum < 0){
@@ -48,7 +48,7 @@ class Best_Inversion{
 
     private:
         Chord previous = Chord("Cmaj", 3);
-        Note root = Note("C3");
+        Note root = Note("C4");
 
         float score_transition(Chord A, Chord B){
             float sum = 0.f;

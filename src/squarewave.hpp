@@ -234,7 +234,6 @@ class SquareWave : public al::SynthVoice {
     if (mAmpEnv.done() && (mEnvFollow.value() < 0.001f)) free();
   }
 
-// Currently Not displaying Graphics
 
   // The graphics processing function
   void onProcess(al::Graphics& g) override {

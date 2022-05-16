@@ -7,65 +7,133 @@
 using namespace al;
 using namespace theory;
 
-int nameToKeyLabelIndex(std::string name) {
 
+int nameToKeyLabelIndex(std::string name, bool is_inv) {
+
+
+if(is_inv){
+    if(name == "C3")
+      return 15;
+    if(name == "D3")
+      return 16;
+    if(name == "E3")
+      return 17;
+    if(name == "F3")
+      return 18;
+    if(name == "G3")
+      return 19;
+    if(name == "A3")
+      return 20;
+    if(name == "B3")
+      return 21;
+    if(name == "C4")
+      return 22;
+    if(name == "D4")
+      return 23;
+    if(name == "E4")
+      return 24;
+    
+    if(name == "F4")
+      return 25;
+    if(name == "G4")
+      return 26;
+    if(name == "A4")
+      return 27;
+    if(name == "B4")
+      return 28;
+    if(name == "C5")
+      return 29;
+    
+
+    if(name == "Db3")
+      return 45;
+    if(name == "Eb3")
+      return 46;
+
+    if(name == "Gb3")
+      return 48;
+    if(name == "Ab3")
+      return 49;
+    if(name == "Bb3")
+      return 50;
+
+    if(name == "Db4")
+      return 52;
+    if(name == "Eb4")
+      return 53;
+    
+    if(name == "Gb4")
+      return 55;
+    if(name == "Ab4")
+      return 56;
+    if(name == "Bb4")
+      return 57;
+
+    if(name == "Db5")
+      return 59;
+}
+else{
   if(name == "C3")
-    return 10;
+    return 0;
   if(name == "D3")
-    return 11;
+    return 1;
   if(name == "E3")
-    return 12;
+    return 2;
   if(name == "F3")
-    return 13;
+    return 3;
   if(name == "G3")
-    return 14;
+    return 4;
   if(name == "A3")
-    return 15;
+    return 5;
   if(name == "B3")
-    return 16;
+    return 6;
   if(name == "C4")
-    return 17;
+    return 7;
   if(name == "D4")
-    return 18;
+    return 8;
   if(name == "E4")
-    return 19;
+    return 9;
   
-  /*
   if(name == "F4")
-    return 19;
+    return 10;
   if(name == "G4")
-    return 19;
+    return 11;
   if(name == "A4")
-    return 19;
+    return 12;
   if(name == "B4")
-    return 19;
+    return 13;
   if(name == "C5")
-    return 19;
+    return 14;
   
-  */
+
   if(name == "Db3")
     return 30;
   if(name == "Eb3")
     return 31;
+
   if(name == "Gb3")
     return 33;
   if(name == "Ab3")
     return 34;
   if(name == "Bb3")
     return 35;
+
   if(name == "Db4")
     return 37;
   if(name == "Eb4")
     return 38;
-  /*
+   
   if(name == "Gb4")
-    return 19;
+    return 40;
   if(name == "Ab4")
-    return 19;
+    return 41;
   if(name == "Bb4")
-    return 19;
+    return 42;
 
-  */
+  if(name == "Db5")
+    return 44;
+
+}
   
 
   
@@ -158,10 +226,16 @@ public:
 
   Best_Inversion b_inv;
 
-  std::string whitekeyLabels[20] = {"C3","D3","E3","F3","G3","A3","B3","C4","D4","E4",
-                                    "C3","D3","E3","F3","G3","A3","B3","C4","D4","E4"};
-  std::string blackkeyLabels[20] = {"Db3","Eb3","","Gb3","Ab3","Bb3","","Db4","Eb4","",
-                                    "Db3","Eb3","","Gb3","Ab3","Bb3","","Db4","Eb4",""};
+  bool is_inv = 0;
+
+  std::string whitekeyLabels[30] = {"C3","D3","E3","F3","G3","A3","B3","C4","D4","E4",
+                                    "F4", "G4", "A4", "B4", "C5", 
+                                    "C3","D3","E3","F3","G3","A3","B3","C4","D4","E4",
+                                    "F4", "G4", "A4", "B4", "C5"};
+  std::string blackkeyLabels[30] = {"Db3","Eb3","","Gb3","Ab3","Bb3","","Db4","Eb4","",
+                                    "Gb4", "Ab4", "Bb4", "", "Db5",
+                                    "Db3","Eb3","","Gb3","Ab3","Bb3","","Db4","Eb4","",
+                                    "Gb4", "Ab4", "Bb4", "", "Db5"};
   // Font renderder
   FontRenderer fontRender;
 
@@ -177,7 +251,7 @@ public:
     // Cacluate the size of piano keys based on the app window size
     float w = float(width());
     float h = float(height());
-    keyWidth = w / 10.f - keyPadding * 2.f;
+    keyWidth = w / 15.f - keyPadding * 2.f;
     keyHeight = h / 2.f - keyPadding * 2.f;
     fontSize = keyWidth * 0.2;
 
@@ -212,15 +286,15 @@ public:
     g.camera(Viewpoint::ORTHO_FOR_2D);  // Ortho [0:width] x [0:height]
 
     // Drawing white piano keys
-    for(int i = 0; i < 20; i++) {
-      int index = i % 10;
+    for(int i = 0; i < 30; i++) {
+      int index = i % 15;
       g.pushMatrix();
       
       float c = 0.9;
       float x = (keyWidth + keyPadding * 2) * index + keyPadding;
       float y = 0;
 
-      if(i >= 10) {
+      if(i >= 15) {
         y = keyHeight + keyPadding * 2;
       }
 
@@ -237,9 +311,9 @@ public:
     }
 
     // Drawing balck piano keys
-    for(int i = 0; i < 20; i++) {
-      int index = i % 10;
-      if(index == 2 || index == 6 || index == 9) continue;
+    for(int i = 0; i < 30; i++) {
+      int index = i % 15;
+      if(index == 2 || index == 6 || index == 9 || index == 13 ) continue;
 
       g.pushMatrix();
       
@@ -247,7 +321,7 @@ public:
       float x = (keyWidth + keyPadding * 2) * index + keyPadding + keyWidth * 0.5;
       float y = keyHeight * 0.5;
 
-      if(i >= 10) {
+      if(i >= 15) {
         y = y + keyHeight + keyPadding * 2;
       }
 
@@ -287,11 +361,31 @@ public:
     Chord chordE = Chord("Em", 3);
     Chord chordF = Chord("Fmaj", 3);
     Chord chordG = Chord("Gmaj", 3);
+    Chord chord1 = Chord("Cmaj", 3);
     int inversion = 0;
 
+    std::string s1[5] = {"Cmaj", "Gmaj", "Am", "Fmaj"};
+
   if(k.shift()){
+    is_inv = 1;
     switch (k.key())
     {
+     case '1':
+      for(int i = 0; i < 4; i++){
+        if(i ==0){
+          chord1 = Chord(s1[i], 4);
+        }
+        else{
+          chord1 = Chord(s1[i], 3);
+          inversion = b_inv.next_best_inversion(chord1);
+        }
+          chord1.invert(inversion);
+          playChord(i, chord1, 1);
+          for(int i=0; i<chord1.notes.size(); i++){
+            std::cout<<chord1.notes[i].name()<<std::endl;
+        }
+      }
+       return false;
      case 'a':
       inversion = b_inv.next_best_inversion(chordA);
       chordA.invert(inversion);
@@ -311,6 +405,7 @@ public:
         std::cout<<inversion<<std::endl;
        return false;
     case 'c':
+      chordC = Chord("Cmaj", 3);
       inversion = b_inv.next_best_inversion(chordC);
       chordC.invert(inversion);
       playChord(0, chordC, 1);
@@ -358,19 +453,23 @@ public:
     }
   }
   else{
-
-    Scale scale = Scale("C4", scale_type::Minor);
-    Chord chordA = Chord("Am", 3);
-    Chord chordB = Chord("Bm", 3);
-    Chord chordC = Chord("Cmaj", 3);
-    Chord chordD = Chord("D", 3);
-    Chord chordE = Chord("Em", 3);
-    Chord chordF = Chord("Fmaj", 3);
-    Chord chordG = Chord("Gmaj", 3);
-    Note A4 = Note('C', '#', 4);
-
+    is_inv = 0;
     switch (k.key())
     {
+     case '1':
+      for(int i = 0; i < 4; i++){
+        if(i == 0){
+          chord1 = Chord(s1[i], 4);
+        }
+        else{
+          chord1 = Chord(s1[i], 3);
+        }
+          playChord(i, chord1, 1);
+          for(int i=0; i<chord1.notes.size(); i++){
+            std::cout<<chord1.notes[i].name()<<std::endl;
+      }
+        }
+       return false;
      case 'a':
       playChord(0, chordA, 1);
       for(int i=0; i<chordA.notes.size(); i++){
@@ -432,7 +531,7 @@ public:
    // Whenever the window size changes this function is called
   void onResize(int w, int h) override {
     // Recaculate the size of piano keys based new window size
-    keyWidth = w / 10.f - keyPadding * 2.f;
+    keyWidth = w / 15.f - keyPadding * 2.f;
     keyHeight = h / 2.f - keyPadding * 2.f;
     fontSize = keyWidth * 0.2;
     addRect(meshKey, 0, 0, keyWidth, keyHeight);
@@ -448,11 +547,11 @@ public:
       
       //if (midiNote > 0) {
         // Check which key is pressed
-        int keyIndex = nameToKeyLabelIndex(note.name());
+        int keyIndex = nameToKeyLabelIndex(note.name(), is_inv);
         
         bool isBlackKey = false;
-        if(keyIndex >= 20) {
-          keyIndex -= 20;
+        if(keyIndex >= 30) {
+          keyIndex -= 30;
           isBlackKey = true;
         }
 
@@ -461,7 +560,7 @@ public:
 
         float w = keyWidth;
         float h = keyHeight;
-        float x = (keyWidth + keyPadding * 2) * (keyIndex % 10) + keyPadding;
+        float x = (keyWidth + keyPadding * 2) * (keyIndex % 15) + keyPadding;
         float y = 0;
         
         if(isBlackKey == true) {
@@ -475,13 +574,10 @@ public:
         std::cout<<"x = "<<x<<std::endl;
         std::cout<<"y = "<<y<<std::endl;
         
-        if(keyIndex >= 10) {
+        if(keyIndex >= 15 ) {
           y += keyHeight + keyPadding * 2;
         }
-      // synthManager.voice()->setInternalParameterValue("pianoKeyWidth", w);
-      // synthManager.voice()->setInternalParameterValue("pianoKeyHeight", h);
-      // synthManager.voice()->setInternalParameterValue("pianoKeyX", x);
-      // synthManager.voice()->setInternalParameterValue("pianoKeyY", y);
+
 
     auto *voice = synthManager.synth().getVoice<SquareWave>();
     // amp, freq, attack, release, pan
@@ -491,6 +587,7 @@ public:
     return time+duration;
   
   }
+ 
 
   float playChord(float time, Chord chord, float duration, bool roll=false){
       float localTime = 0;
@@ -500,6 +597,7 @@ public:
       }
       return time+duration;
   }
+
 
   void playHappyBirthday(Note root, float bpm)
   {
