@@ -1,133 +1,170 @@
+
 #ifndef MYAPP_HPP
 #define MYAPP_HPP
 
-#include "Gamma/Analysis.h"
-#include "Gamma/Effects.h"
-#include "Gamma/Envelope.h"
-#include "Gamma/Oscillator.h"
-
-#include "al/app/al_App.hpp"
-#include "al/graphics/al_Shapes.hpp"
-#include "al/scene/al_PolySynth.hpp"
-#include "al/scene/al_SynthSequencer.hpp"
-#include "al/ui/al_ControlGUI.hpp"
-#include "al/ui/al_Parameter.hpp"
-
-#include "al/graphics/al_Shapes.hpp"
-#include "al/graphics/al_Font.hpp"
-
-#include "squarewave.hpp"
-
-#include "theory.hpp"
-#include "tempo.hpp"
-
-
+#include "best_inversion.hpp"
 
 using namespace al;
 using namespace theory;
 
-// The helper function used to visualize which keys pressed or released on a virtual piano.
-int asciiToKeyLabelIndex(int asciiKey) {
-  switch (asciiKey) {
-  case '2':
-    return 30;
-  case '3':
-    return 31;
-  case '5':
-    return 33;
-  case '6':
-    return 34;
-  case '7':
-    return 35;
-  case '9':
-    return 37;
-  case '0':
-    return 38;
+int nameToKeyLabelIndex(std::string name) {
 
-  case 'q':
+  if(name == "C3")
     return 10;
-  case 'w':
+  if(name == "D3")
     return 11;
-  case 'e':
+  if(name == "E3")
     return 12;
-  case 'r':
+  if(name == "F3")
     return 13;
-  case 't':
+  if(name == "G3")
     return 14;
-  case 'y':
+  if(name == "A3")
     return 15;
-  case 'u':
+  if(name == "B3")
     return 16;
-  case 'i':
+  if(name == "C4")
     return 17;
-  case 'o':
+  if(name == "D4")
     return 18;
-  case 'p':
+  if(name == "E4")
+    return 19;
+  
+  /*
+  if(name == "F4")
+    return 19;
+  if(name == "G4")
+    return 19;
+  if(name == "A4")
+    return 19;
+  if(name == "B4")
+    return 19;
+  if(name == "C5")
+    return 19;
+  
+  */
+  if(name == "Db3")
+    return 30;
+  if(name == "Eb3")
+    return 31;
+  if(name == "Gb3")
+    return 33;
+  if(name == "Ab3")
+    return 34;
+  if(name == "Bb3")
+    return 35;
+  if(name == "Db4")
+    return 37;
+  if(name == "Eb4")
+    return 38;
+  /*
+  if(name == "Gb4")
+    return 19;
+  if(name == "Ab4")
+    return 19;
+  if(name == "Bb4")
     return 19;
 
-  case 's':
-    return 20;
-  case 'd':
-    return 21;
-  case 'g':
-    return 23;
-  case 'h':
-    return 24;
-  case 'j':
-    return 25;
-  case 'l':
-    return 27;
-  case ';':
-    return 28;
+  */
+  
 
-  case 'z':
-    return 0;
-  case 'x':
-    return 1;
-  case 'c':
-    return 2;
-  case 'v':
-    return 3;
-  case 'b':
-    return 4;
-  case 'n':
-    return 5;
-  case 'm':
-    return 6;
-  case ',':
-    return 7;
-  case '.':
-    return 8;
-  case '/':
-    return 9;
-  }
+  
+  // switch (asciiK) {
+  // case '2':
+  //   return 30;
+  // case '3':
+  //   return 31;
+  // case '5':
+  //   return 33;
+  // case '6':
+  //   return 34;
+  // case '7':
+  //   return 35;
+  // case '9':
+  //   return 37;
+  // case '0':
+  //   return 38;
+
+  // case 'q':
+  //   return 10;
+  // case 'w':
+  //   return 11;
+  // case 'e':
+  //   return 12;
+  // case 'r':
+  //   return 13;
+  // case 't':
+  //   return 14;
+  // case 'y':
+  //   return 15;
+  // case 'u':
+  //   return 16;
+  // case 'i':
+  //   return 17;
+  // case 'o':
+  //   return 18;
+  // case 'p':
+  //   return 19;
+
+  // case 's':
+  //   return 20;
+  // case 'd':
+  //   return 21;
+  // case 'g':
+  //   return 23;
+  // case 'h':
+  //   return 24;
+  // case 'j':
+  //   return 25;
+  // case 'l':
+  //   return 27;
+  // case ';':
+  //   return 28;
+
+  // case 'z':
+  //   return 0;
+  // case 'x':
+  //   return 1;
+  // case 'c':
+  //   return 2;
+  // case 'v':
+  //   return 3;
+  // case 'b':
+  //   return 4;
+  // case 'n':
+  //   return 5;
+  // case 'm':
+  //   return 6;
+  // case ',':
+  //   return 7;
+  // case '.':
+  //   return 8;
+  // case '/':
+  //   return 9;
+  // }
   return 0;
 }
 
-// We make an app.
-class MyApp : public App {
- public:
-  // GUI manager for SineEnv voices
-  // The name provided determines the name of the directory
-  // where the presets and sequences are stored
-  SynthGUIManager<SquareWave> synthManager{"Chord Graphics"};
-  
-  // Mesh and variables for drawing piano keys
+class MyApp : public App
+{
+public:
+
+  SynthGUIManager<SquareWave> synthManager{"SquareWave"};
+
   Mesh meshKey;
   float keyWidth, keyHeight;
   float keyPadding = 2.f;
   float fontSize;
+
+  Best_Inversion b_inv;
+
   std::string whitekeyLabels[20] = {"C3","D3","E3","F3","G3","A3","B3","C4","D4","E4",
-                                    "C5","D5","E5","F5","G5","A5","B5","C6","D6","E6"};
+                                    "C3","D3","E3","F3","G3","A3","B3","C4","D4","E4"};
   std::string blackkeyLabels[20] = {"Db3","Eb3","","Gb3","Ab3","Bb3","","Db4","Eb4","",
-                                    "Db5","Db5","","Gb5","Ab5","Bb5","","Db6","Eb6",""};
+                                    "Db3","Eb3","","Gb3","Ab3","Bb3","","Db4","Eb4",""};
   // Font renderder
   FontRenderer fontRender;
 
-  // This function is called right after the window is created
-  // It provides a grphics context to initialize ParameterGUI
-  // It's also a good place to put things that should
-  // happen once at startup.
   void onCreate() override {
     navControl().active(false);  // Disable navigation via keyboard, since we
                                  // will be using keyboard for note triggering
@@ -152,12 +189,13 @@ class MyApp : public App {
 
     synthManager.synthRecorder().verbose(true);
   }
+
   // The audio callback function. Called when audio hardware requires data
   void onSound(AudioIOData& io) override {
-    synthManager.render(io);  // Render audio
-  }
-
-  void onAnimate(double dt) override{
+      synthManager.render(io);  // Render audio
+    }
+  void onAnimate(double dt) override
+  {
     // The GUI is prepared here
     imguiBeginFrame();
     // Draw a window that contains the synth control panel
@@ -166,7 +204,8 @@ class MyApp : public App {
   }
 
   // The graphics callback function.
-   void onDraw(Graphics& g) override{
+  // The graphics callback function.
+  void onDraw(Graphics& g) override {
     g.clear();
 
     // This example uses only the orthogonal projection for 2D drawing
@@ -233,34 +272,112 @@ class MyApp : public App {
     // GUI is drawn here
     imguiDraw();
   }
-
-//   // Whenever a key is pressed, this function is called
-   bool onKeyDown(Keyboard const& k) override{
-    
-    if (ParameterGUI::usingKeyboard()) {  // Ignore keys if GUI is using
+  // Whenever a key is pressed, this function is called
+  bool onKeyDown(Keyboard const &k) override
+  {
+     if (ParameterGUI::usingKeyboard()) {  // Ignore keys if GUI is using
          return true;
     }
  
     Scale scale = Scale("C4", scale_type::Minor);
-    Chord chordA = Chord("Am", 2);
-    Chord chordB = Chord("Bm", 2);
+    Chord chordA = Chord("Am", 3);
+    Chord chordB = Chord("Bm", 3);
     Chord chordC = Chord("Cmaj", 3);
     Chord chordD = Chord("Dm", 3);
     Chord chordE = Chord("Em", 3);
-    Chord chordF = Chord("Fmaj", 2);
-    Chord chordG = Chord("Gmaj", 2);
+    Chord chordF = Chord("Fmaj", 3);
+    Chord chordG = Chord("Gmaj", 3);
+    int inversion = 0;
 
+  if(k.shift()){
     switch (k.key())
     {
      case 'a':
-      chordA.invert(1);
+      inversion = b_inv.next_best_inversion(chordA);
+      chordA.invert(inversion);
       playChord(0, chordA, 1);
       for(int i=0; i<chordA.notes.size(); i++){
         std::cout<<chordA.notes[i].name()<<std::endl;
       }
+      std::cout<<inversion<<std::endl;
        return false;
      case 'b':
-       chordB.invert(2); 
+       inversion = b_inv.next_best_inversion(chordB);
+       chordB.invert(inversion); 
+       playChord(0, chordB, 1);
+        for(int i=0; i<chordB.notes.size(); i++){
+          std::cout<<chordB.notes[i].name()<<std::endl;
+        }
+        std::cout<<inversion<<std::endl;
+       return false;
+    case 'c':
+      inversion = b_inv.next_best_inversion(chordC);
+      chordC.invert(inversion);
+      playChord(0, chordC, 1);
+      for(int i=0; i<chordC.notes.size(); i++){
+          std::cout<<chordC.notes[i].name()<<std::endl;
+        }
+        std::cout<<inversion<<std::endl;
+      return false;
+    case 'd':
+      inversion = b_inv.next_best_inversion(chordD);
+      playChord(0, chordD, 1);
+      for(int i=0; i<chordD.notes.size(); i++){
+        std::cout<<chordD.notes[i].name()<<std::endl;
+      }
+      std::cout<<inversion<<std::endl;
+      return false;
+    case 'e':
+      inversion = b_inv.next_best_inversion(chordE);
+      playChord(0, chordE, 1);
+      for(int i=0; i<chordE.notes.size(); i++){
+        std::cout<<chordE.notes[i].name()<<std::endl;
+      }
+      std::cout<<inversion<<std::endl;
+
+      return false;
+    case 'f':
+      inversion = b_inv.next_best_inversion(chordF);
+      chordF.invert(inversion);
+      playChord(0, chordF, 1);
+      for(int i=0; i<chordF.notes.size(); i++){
+        std::cout<<chordF.notes[i].name()<<std::endl;
+      }
+      std::cout<<inversion<<std::endl;
+      return false;
+    case 'g':
+      inversion = b_inv.next_best_inversion(chordG);
+      chordG.invert(inversion);
+      playChord(0, chordG, 1);
+      for(int i=0; i<chordG.notes.size(); i++){
+        std::cout<<chordG.notes[i].name()<<std::endl;
+      }
+      std::cout<<inversion<<std::endl;
+
+      return false; 
+    }
+  }
+  else{
+
+    Scale scale = Scale("C4", scale_type::Minor);
+    Chord chordA = Chord("Am", 3);
+    Chord chordB = Chord("Bm", 3);
+    Chord chordC = Chord("Cmaj", 3);
+    Chord chordD = Chord("D", 3);
+    Chord chordE = Chord("Em", 3);
+    Chord chordF = Chord("Fmaj", 3);
+    Chord chordG = Chord("Gmaj", 3);
+    Note A4 = Note('C', '#', 4);
+
+    switch (k.key())
+    {
+     case 'a':
+      playChord(0, chordA, 1);
+      for(int i=0; i<chordA.notes.size(); i++){
+        std::cout<<chordA.notes[i].name()<<std::endl;
+        }
+       return false;
+     case 'b':
        playChord(0, chordB, 1);
         for(int i=0; i<chordB.notes.size(); i++){
           std::cout<<chordB.notes[i].name()<<std::endl;
@@ -285,36 +402,35 @@ class MyApp : public App {
       }
       return false;
     case 'f':
-      chordF.invert(2);
       playChord(0, chordF, 1);
       for(int i=0; i<chordF.notes.size(); i++){
         std::cout<<chordF.notes[i].name()<<std::endl;
       }
       return false;
     case 'g':
-      chordG.invert(2);
       playChord(0, chordG, 1);
       for(int i=0; i<chordG.notes.size(); i++){
         std::cout<<chordG.notes[i].name()<<std::endl;
       }
       return false; 
     }
+    
+  }
     return true;
   }
 
   // Whenever a key is released this function is called
-  bool onKeyUp(Keyboard const& k) override{
-    
-     int midiNote = asciiToMIDI(k.key());
+  bool onKeyUp(Keyboard const &k) override{
+   int midiNote = asciiToMIDI(k.key());
     if (midiNote > 0)
     {
       synthManager.triggerOff(midiNote);
     }
     return true;
   }
-  
-  // Whenever the window size changes this function is called
-  void onResize(int w, int h) override{
+
+   // Whenever the window size changes this function is called
+  void onResize(int w, int h) override {
     // Recaculate the size of piano keys based new window size
     keyWidth = w / 10.f - keyPadding * 2.f;
     keyHeight = h / 2.f - keyPadding * 2.f;
@@ -322,28 +438,61 @@ class MyApp : public App {
     addRect(meshKey, 0, 0, keyWidth, keyHeight);
   }
 
-  void onExit() override;// { imguiShutdown(); }
+  void onExit() override { imguiShutdown(); }
+
+  // New code: a function to play a note A
 
   float playNote(float time, Note note, float duration = 0.5, float amp = 0.2, float attack = 0.1, float decay = 0.5)
   {
+      int midiNote = note.midi();
+      
+      //if (midiNote > 0) {
+        // Check which key is pressed
+        int keyIndex = nameToKeyLabelIndex(note.name());
+        
+        bool isBlackKey = false;
+        if(keyIndex >= 20) {
+          keyIndex -= 20;
+          isBlackKey = true;
+        }
+
+        //synthManager.voice()->setInternalParameterValue(
+        //    "frequency", ::pow(2.f, (midiNote - 69.f) / 12.f) * 432.f);
+
+        float w = keyWidth;
+        float h = keyHeight;
+        float x = (keyWidth + keyPadding * 2) * (keyIndex % 10) + keyPadding;
+        float y = 0;
+        
+        if(isBlackKey == true) {
+          x += keyWidth * 0.5;
+          y += keyHeight * 0.5;
+          h *= 0.5;
+        }
+
+        std::cout<<"w = "<<w<<std::endl;
+        std::cout<<"h = "<<h<<std::endl;
+        std::cout<<"x = "<<x<<std::endl;
+        std::cout<<"y = "<<y<<std::endl;
+        
+        if(keyIndex >= 10) {
+          y += keyHeight + keyPadding * 2;
+        }
+      // synthManager.voice()->setInternalParameterValue("pianoKeyWidth", w);
+      // synthManager.voice()->setInternalParameterValue("pianoKeyHeight", h);
+      // synthManager.voice()->setInternalParameterValue("pianoKeyX", x);
+      // synthManager.voice()->setInternalParameterValue("pianoKeyY", y);
+
     auto *voice = synthManager.synth().getVoice<SquareWave>();
     // amp, freq, attack, release, pan
-    voice->setTriggerParams({amp, note.frequency(), 0.1, 0.1, 0.0});
+    voice->setTriggerParams({amp, note.frequency(), 0.1, 0.1, 0.0, x, y,w,h});
     synthManager.synthSequencer().addVoiceFromNow(voice, time, duration*0.9);
-
+     // }
     return time+duration;
-
+  
   }
 
-//   void releaseNote(Note note)
-//   {
-//       int midiNote = note.midi();
-//       if (midiNote > 0) {
-//         synthManager.triggerOff(midiNote);
-//       }
-//   }
-  float playChord(float time, Chord chord, float duration, bool roll=false)
- {
+  float playChord(float time, Chord chord, float duration, bool roll=false){
       float localTime = 0;
       for(int i=0; i<chord.notes.size(); i++){
           playNote(time+localTime, chord.notes[i], duration, 0.05, 0.2, 0.75);
@@ -351,14 +500,10 @@ class MyApp : public App {
       }
       return time+duration;
   }
-  // void releaseChord(Chord chord){
-  //   float localTime = 0;
-  //     for(int i=0; i<chord.notes.size(); i++){
-  //         releaseNote(chord.notes[i]);
-  //     }
-  // }
+
   void playHappyBirthday(Note root, float bpm)
   {
+    
     // Happy birthday uses: P1(C), M2(D), M3(E), P4(F), P5(G), M6(A), and m7(Bb)
     Scale majScale = Scale(root, scale_type::Major);
     Note M2 = majScale.degree(scale_type::II);
@@ -434,8 +579,7 @@ class MyApp : public App {
     time = playNote(time, P4, tpo.duration(Tempo::h)); 
 
   }
+  };
 
-};
 
-
-#endif
+  #endif
